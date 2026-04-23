@@ -7,10 +7,19 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { PostHogProvider } from "@posthog/react";
+import posthog from "posthog-js";
 import Crosshair from "#/components/Crosshair";
 import Navbar from "#/components/Navbar";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
+
+if (typeof window !== "undefined") {
+	posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
+		api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+		capture_pageview: "history_change",
+	});
+}
 
 interface MyRouterContext {
 	queryClient: QueryClient;
@@ -52,33 +61,35 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="font-sans antialiased wrap-anywhere">
-				<ClerkProvider>
-					<div id="root-layout">
-						<header>
-							<div className="frame">
-								<Navbar />
-								<Crosshair />
-								<Crosshair />
-							</div>
-						</header>
-						<main>
-							<div className="frame">{children}</div>
-						</main>
-					</div>
+				<PostHogProvider client={posthog}>
+					<ClerkProvider>
+						<div id="root-layout">
+							<header>
+								<div className="frame">
+									<Navbar />
+									<Crosshair />
+									<Crosshair />
+								</div>
+							</header>
+							<main>
+								<div className="frame">{children}</div>
+							</main>
+						</div>
 
-					<TanStackDevtools
-						config={{
-							position: "bottom-right",
-						}}
-						plugins={[
-							{
-								name: "Tanstack Router",
-								render: <TanStackRouterDevtoolsPanel />,
-							},
-							TanStackQueryDevtools,
-						]}
-					/>
-				</ClerkProvider>
+						<TanStackDevtools
+							config={{
+								position: "bottom-right",
+							}}
+							plugins={[
+								{
+									name: "Tanstack Router",
+									render: <TanStackRouterDevtoolsPanel />,
+								},
+								TanStackQueryDevtools,
+							]}
+						/>
+					</ClerkProvider>
+				</PostHogProvider>
 				<Scripts />
 			</body>
 		</html>
