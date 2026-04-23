@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/tanstack-react-start";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -8,7 +9,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import Crosshair from "#/components/Crosshair";
 import Navbar from "#/components/Navbar";
-import ClerkProvider from "../integrations/clerk/provider";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
@@ -57,8 +57,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						<header>
 							<div className="frame">
 								<Navbar />
-                <Crosshair />
-                <Crosshair />
+								<Crosshair />
+								<Crosshair />
 							</div>
 						</header>
 						<main>
